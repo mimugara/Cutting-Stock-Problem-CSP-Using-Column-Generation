@@ -1,0 +1,80 @@
+option solver cplex;
+option solution_round 5;
+model cg.mod
+data cg.dat
+problem CSP: X_D, unitats, MinUnitats, Demanda, ActualitzarUnitats;
+	option presolve 1;
+problem NovaColumna: a, CostReduit, LimitAmplada;
+
+let l := 0;
+for {i in talls} {
+   	let l := l + 1;
+   	let D[i,l] := floor(amplada_total_rotllo/i);
+   	let {j in talls: i <> j} D[j,l] := 0;
+   	let longitud[l] := i * D[i,l];
+};
+
+solve CSP;
+let {i in talls} lambda[i] := Demanda[i].dual;
+solve NovaColumna;
+
+set remove;
+
+repeat {
+	printf "*******************************\n";
+	printf "======== Nova iteracio ========\n";
+	printf "*******************************\n\n";
+	let remove := {};
+	printf "******************************************************\n";
+	printf "Valor de la funció objectiu al principi de la iteracio\n";
+	printf "------------------------------------------------------\n";
+	display MinUnitats;
+	printf "******************************************************\n";
+	printf "*********************\n";
+	printf "Valor del cost reduit\n";
+	printf "---------------------\n";
+	display CostReduit;
+	printf "*********************\n";
+	let l := l + 1;
+	let patrons := patrons union {l};
+	let {i in talls} D[i,l] := a[i];
+	let longitud[l] := sum {i in talls} i * D[i,l];
+	printf "*******************************\n";
+	printf "Valor de la nova columna per %d\n",l;
+	printf "-------------------------------\n";
+	display a;
+	printf "*******************************\n";
+	solve CSP;
+	let {i in talls} lambda[i] := Demanda[i].dual;
+	solve NovaColumna;
+	printf "***************************************************\n";
+	printf "Valor de la funció objectiu al final de la iteracio\n";
+	printf "---------------------------------------------------\n";
+	display MinUnitats;
+	printf "***************************************************\n";
+	printf "*********************\n";
+	printf "Valor del cost reduit\n";
+	printf "---------------------\n";
+	display CostReduit;
+	printf "*********************\n";
+	for {i in patrons} if X_D[i] == 0 then let remove := remove union {i};
+	let patrons := patrons diff remove;
+} while (CostReduit < 0);
+printf "Fi de l'execució\n\n";
+display D;
+for {i in patrons} printf "\t%d",i;
+printf "\n";
+for {i in talls} {
+	printf "%d",i;
+	for {j in patrons}
+		printf"\t%d",D[i,j];
+	printf "\n";
+}
+printf "\n";
+printf "Solucio sense arrodoniment\n\n";
+display X_D;
+display MinUnitats;
+printf "Arrodonim la solucio obtinguda\n\n";
+let {i in patrons} X_D[i] := ceil(X_D[i]);
+display X_D;
+display MinUnitats;

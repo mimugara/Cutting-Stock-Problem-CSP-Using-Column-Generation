@@ -1,0 +1,7 @@
+param amplada_total_rotllo := 100 ;	# amplada total dels rotllos
+set talls := 24 32 40;				# conjunt de possibles talls
+param comandes :=					# nombre de comandes de cada tall
+          24     75
+          32     110
+          40     50;
+          

@@ -1,0 +1,18 @@
+set talls := 24 32 40;					# conjunt de possibles talls
+set patrons := 1 2 3 4 5 6 7 8 9 10 	# conjunt total de possibles patrons de tall 
+				11 12 13 14 15 16;
+param amplada_total_rotllo := 100;		# amplada total dels rotllos
+param comandes :=						# nombre de comandes de cada tall
+          24     75
+          32     110
+          40     50;
+param longitud :=   					# longituds en polzades de cada patró de tall
+1 24	2 56	3 88	4 64	5 96	6 48	7 80	8 88
+9 72	10 96	11 40	12 72	13 80	14 32	15 64	16 96;   
+param D :=								# nombre d'unitats de cada tall per cada patró
+24 1 1	24 2 1	24 3 1	24 4 1	24 5 1	24 6 2	24 7 2	24 8 2
+24 9 3	24 10 4	24 11 0	24 12 0	24 13 0	24 14 0	24 15 0	24 16 0
+40 1 0	40 2 0	40 3 0	40 4 1	40 5 1	40 6 0	40 7 0	40 8 1
+40 9 0	40 10 0	40 11 1	40 12 1	40 13 2	40 14 0	40 15 0	40 16 0
+32 1 0	32 2 1	32 3 2	32 4 0	32 5 1	32 6 0	32 7 1	32 8 0
+32 9 0	32 10 0	32 11 0	32 12 1	32 13 0	32 14 1	32 15 2	32 16 3;

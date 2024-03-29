@@ -1,0 +1,37 @@
+option solver cplex;
+option solution_round 5;
+model cg.mod
+data cg.dat
+problem CSP: X_D, unitats, MinUnitats, Demanda, ActualitzarUnitats;
+	option presolve 1;
+problem NovaColumna: a, CostReduit, LimitAmplada;
+
+let l := 0;
+for {i in talls} {
+	let l := l + 1;
+	let D[i,l] := floor(amplada_total_rotllo/i);
+	let {j in talls: i <> j} D[j,l] := 0;
+	let longitud[l] := i * D[i,l];
+};
+
+# necessitem una primera iteracio per trobar els valors de X_D =/= 0
+solve CSP;
+let {i in talls} lambda[i] := Demanda[i].dual;
+solve NovaColumna;
+
+set remove;
+
+repeat {
+	let remove := {};
+	let l := l + 1;
+	let patrons := patrons union {l};
+	let {i in talls} D[i,l] := a[i];
+	let longitud[l] := sum {i in talls} i * D[i,l];
+	# resolem amb el nou patro trobat
+	solve CSP;
+	let {i in talls} lambda[i] := Demanda[i].dual;
+	solve NovaColumna;
+	# ara podem procedir a purgar aquells patrons que no utilitzem
+	for {i in patrons} if X_D[i] == 0 then let remove := remove union {i};
+	let patrons := patrons diff remove;
+} while (CostReduit < 0);
