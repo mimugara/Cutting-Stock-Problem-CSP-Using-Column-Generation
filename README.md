@@ -1,4 +1,4 @@
-# Operations research
+# Operations Research
 
 This repository contains projects from the course Operations Research of 
 the Faculty of Informatics of Barcelona (FIB) at the Universitat Politècnica de Catalunya (FIB - UPC) during the 2022-2023 Q1 edition.
